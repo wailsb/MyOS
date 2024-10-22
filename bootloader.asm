@@ -1,11 +1,12 @@
 ;address where our program is loaded
 [org 0x7c00]
 ;our code
-mov bx,booting_message
-call print_msg
-mov bx,after
-call print_msg
+mov ah,0x0e
+mov dx,0x6f1e
+call print_hex
 jmp $
+%include "printhex.asm"
+%include "printmemo.asm"
 ;message booting string
 booting_message:
     db "Hello!!......loading bootloader",0
@@ -13,18 +14,7 @@ booting_message:
 after:
     db 0x0A,"Bootloader ... loaded",0
 ;print message function
-print_msg:
-    pusha
-    mov ah,0x0e
-    loop:
-        mov al,[bx]
-        cmp al,0
-        je end
-        int 0x10
-        add bx,1
-        jmp loop
-    end:
-        popa
-        ret
+Hex_tmp:
+    db "0x0000",0
 times 510 -( $ - $$ ) db 0
 dw 0xaa55
